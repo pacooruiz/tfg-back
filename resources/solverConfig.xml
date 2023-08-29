@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
+	
+  <solutionClass>vehicleRoutingCore.domain.VehicleRoutingSolution</solutionClass>
+  <entityClass>vehicleRoutingCore.domain.Vehicle</entityClass>
+  <entityClass>vehicleRoutingCore.domain.Entity</entityClass>
+
+  <scoreDirectorFactory>
+	<constraintProviderClass>vehicleRoutingCore.score.VehicleRoutingConstraintProvider</constraintProviderClass>
+	<constraintStreamImplType>BAVET</constraintStreamImplType>
+    <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
+  </scoreDirectorFactory>
+
+
+  <constructionHeuristic>
+ 	</constructionHeuristic>
+  <localSearch>
+  <unionMoveSelector>
+      <changeMoveSelector/>
+      <swapMoveSelector/>
+      <subListChangeMoveSelector>
+        <selectReversingMoveToo>true</selectReversingMoveToo>
+      </subListChangeMoveSelector>
+      <subListSwapMoveSelector>
+        <selectReversingMoveToo>true</selectReversingMoveToo>
+      </subListSwapMoveSelector>
+    </unionMoveSelector>
+    <acceptor>
+      <lateAcceptanceSize>200</lateAcceptanceSize>
+    </acceptor>
+    <forager>
+      <acceptedCountLimit>1</acceptedCountLimit>
+    </forager>
+    
+  </localSearch>
+</solver>
