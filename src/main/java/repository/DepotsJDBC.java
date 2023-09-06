@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import dtos.response.Depot;
 
@@ -31,7 +32,7 @@ public class DepotsJDBC {
 	public static void addDepot(Depot depot) throws SQLException {
 		String query = "INSERT INTO depots (depot_id, name, lat, lng) VALUES (?, ?, ?, ?)";
 		try(Connection connection = DataBase.getConnection(); PreparedStatement ps = connection.prepareStatement(query)){
-			ps.setString(1, depot.getId());
+			ps.setString(1, UUID.randomUUID().toString());
 			ps.setString(2, depot.getName());
 			ps.setString(3, depot.getLatitude());
 			ps.setString(4, depot.getLongitude());

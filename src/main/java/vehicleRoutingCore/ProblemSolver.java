@@ -2,14 +2,18 @@ package vehicleRoutingCore;
 
 import java.io.File;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.optaplanner.core.api.score.ScoreExplanation;
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
+import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.solver.SolutionManager;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.solver.SolverConfig;
 
+import vehicleRoutingCore.domain.Solution;
 import vehicleRoutingCore.domain.VehicleRoutingSolution;
 
 public class ProblemSolver {
@@ -18,19 +22,27 @@ public class ProblemSolver {
 
 	private SolverConfig solverConfig;
 	
-	public VehicleRoutingSolution solve(VehicleRoutingSolution problem) {
+	public Solution solve(VehicleRoutingSolution problem) {
 		
 		SolverFactory<VehicleRoutingSolution> solverFactory = SolverFactory.create(solverConfig);
 		
 		solver = solverFactory.buildSolver();
 		
-		VehicleRoutingSolution solution = solver.solve(problem);
+		VehicleRoutingSolution vehicleRoutingSolution = solver.solve(problem);
 
-		SolutionManager<VehicleRoutingSolution, HardSoftScore> scoreManager = SolutionManager.create(solverFactory);
-		ScoreExplanation<VehicleRoutingSolution, HardSoftScore> scoreExplanation = scoreManager.explain(solution);
+		SolutionManager<VehicleRoutingSolution, HardSoftLongScore> scoreManager = SolutionManager.create(solverFactory);
+		ScoreExplanation<VehicleRoutingSolution, HardSoftLongScore> scoreExplanation = scoreManager.explain(vehicleRoutingSolution);
 		
-		System.out.println(scoreExplanation.getSummary());
+		List<String> errors = new ArrayList<>();
 		
+		for(Object key : scoreExplanation.getConstraintMatchTotalMap().keySet()) {
+			ConstraintMatchTotal<HardSoftLongScore> constraint = scoreExplanation.getConstraintMatchTotalMap().get(key);
+			if(constraint.getScore().getHardScore() < 0L) {
+				errors.add(constraint.getConstraintName());
+			}
+		}
+		
+		Solution solution = new Solution(vehicleRoutingSolution, errors);
 		
 				
 		return solution;

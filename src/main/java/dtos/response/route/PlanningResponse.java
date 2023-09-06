@@ -7,6 +7,7 @@ public class PlanningResponse {
 	private String title;
 	private String id;
 	private List<Day> days;
+
 	public String getTitle() {
 		return title;
 	}
@@ -25,7 +26,5 @@ public class PlanningResponse {
 	public void setDays(List<Day> days) {
 		this.days = days;
 	}
-	
-	
 
 }

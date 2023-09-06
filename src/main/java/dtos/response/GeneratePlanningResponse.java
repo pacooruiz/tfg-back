@@ -1,9 +1,13 @@
 package dtos.response;
 
+import java.util.List;
+
 public class GeneratePlanningResponse {
 	String status;
 	
 	String id;
+	
+	private List<String> errors;
 
 	public String getId() {
 		return id;
@@ -16,5 +20,11 @@ public class GeneratePlanningResponse {
 	}
 	public void setStatus(String status) {
 		this.status = status;
+	}
+	public List<String> getErrors() {
+		return errors;
+	}
+	public void setErrors(List<String> errors) {
+		this.errors = errors;
 	}
 }

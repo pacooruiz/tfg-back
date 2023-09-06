@@ -29,9 +29,10 @@ import dtos.request.SolveRequestBody;
 import dtos.request.Vehicle;
 import dtos.request.Worker;
 import dtos.response.GeneratePlanningResponse;
-import dtos.response.route.PlanningResponse;
 import repository.PlanningsJDBC;
 import vehicleRoutingCore.ProblemSolver;
+import vehicleRoutingCore.domain.Solution;
+import vehicleRoutingCore.domain.VehicleRoutingSolution;
 
 public class PlanningsService {
 	
@@ -46,7 +47,16 @@ public class PlanningsService {
   public GeneratePlanningResponse requestToProblem(SolveRequestBody request) throws Exception {
 	  
 	if(request.getTitle()==null || request.getTitle().isBlank()) {
-		request.setTitle("Planificación sin título");
+		
+		String title = "Planificación sin título";
+		
+		int number = PlanningsJDBC.getNumberForNoNamePlanning();
+		
+		if(number != 0) {
+			title = title.concat(" " + number);
+		}
+		
+		request.setTitle(title);
 	}
 
     //
@@ -174,13 +184,16 @@ public class PlanningsService {
     ProblemSolver solver = new ProblemSolver();
     solver.configSolver(request.getTime());
     
-    vehicleRoutingCore.domain.VehicleRoutingSolution solution = solver.solve(problem);
     
-    if(solution.getScore().getHardScore() != 0) {
+    Solution solution = solver.solve(problem);
+    
+    VehicleRoutingSolution vehicleRoutingSolution = solution.getVehicleRoutingSolution();
+    
+    if(vehicleRoutingSolution.getScore().getHardScore() != 0) {
     	
-    	PlanningResponse response = new PlanningResponse();
-		
-		throw new Exception("ERR");
+    	GeneratePlanningResponse response = new GeneratePlanningResponse();
+		response.setErrors(solution.getErrors());
+		return response;
 	}
     
 	Planning planning = new Planning();
@@ -194,7 +207,7 @@ public class PlanningsService {
 	List<RouteJob> jobs = new ArrayList<>();
 	  
 	  
-	  for(vehicleRoutingCore.domain.Vehicle domainVehicle : solution.getVehicles()) {
+	  for(vehicleRoutingCore.domain.Vehicle domainVehicle : vehicleRoutingSolution.getVehicles()) {
 		  
 		  if(domainVehicle.hasJobs() && domainVehicle.hasWorkers()) {
 			  

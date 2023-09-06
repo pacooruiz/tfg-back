@@ -52,6 +52,10 @@ public class PlanningsController {
     try {
     	GeneratePlanningResponse response = new PlanningsService().requestToProblem(body);
        
+    	if(response.getErrors()!=null && !response.getErrors().isEmpty()) {
+    		return Response.status(Response.Status.BAD_REQUEST).entity(response).build();
+    	}
+    	
        return Response.ok().entity(response).build();
       
       

@@ -1,5 +1,8 @@
 package dtos.response.route;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Job {
 	
 	private String id;
@@ -23,6 +26,8 @@ public class Job {
 	private String description;
 	
 	private int loadNeeded;
+	
+	private List<String> plannings = new ArrayList<>();
 
 	public int getLoadNeeded() {
 		return loadNeeded;
@@ -110,6 +115,18 @@ public class Job {
 
 	public void setEndTime(Long endTime) {
 		this.endTime = endTime;
+	}
+
+	public List<String> getPlannings() {
+		return plannings;
+	}
+
+	public void setPlannings(List<String> plannings) {
+		this.plannings = plannings;
+	}
+	
+	public void addPlanning(String planning) {
+		plannings.add(planning);
 	}
 
 }

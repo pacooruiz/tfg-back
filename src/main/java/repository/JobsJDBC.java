@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import dtos.response.route.Job;
 import dtos.response.route.Location;
@@ -37,6 +38,34 @@ public class JobsJDBC {
 				location.setLongitude(rs.getString("longitude"));
 				job.setLocation(location);
 				jobs.add(job);
+			}
+			
+			
+			
+		}
+		
+		return addPlannings(jobs);
+	}
+	
+	private static List<Job> addPlannings(List<Job> jobs) throws SQLException{
+		
+		String query = "SELECT rj.job_id, p.name FROM routes_jobs rj INNER JOIN planning p ON rj.planning_id = p.id WHERE job_id IN(";
+		for(int i=0; i<jobs.size()-1; i++) {
+			query = query + "?,";
+		}
+		query = query + "?);";
+		
+		try(Connection connection = DataBase.getConnection(); PreparedStatement ps = connection.prepareStatement(query)){
+			int count = 1;
+			for(Job job:jobs) {
+				ps.setString(count++, job.getId());
+			}
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()) {
+				
+				String job = rs.getString("job_id");
+				
+				jobs.stream().filter(j -> j.getId().equals(job)).collect(Collectors.toList()).get(0).addPlanning(rs.getString("name"));		
 			}
 		}
 		return jobs;

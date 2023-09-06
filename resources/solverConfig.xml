@@ -27,7 +27,7 @@
       </subListSwapMoveSelector>
     </unionMoveSelector>
     <acceptor>
-      <lateAcceptanceSize>200</lateAcceptanceSize>
+      <simulatedAnnealingStartingTemperature>4hard/100000soft</simulatedAnnealingStartingTemperature>
     </acceptor>
     <forager>
       <acceptedCountLimit>1</acceptedCountLimit>

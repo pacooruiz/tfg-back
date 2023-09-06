@@ -18,6 +18,17 @@ import dtos.response.Planning;
 
 public class PlanningsJDBC {
 	
+	public static int getNumberForNoNamePlanning() throws SQLException{
+		String query = "select count(*) from planning where name like 'Planificación sin título%'";
+		try(Connection connection = DataBase.getConnection(); PreparedStatement ps = connection.prepareStatement(query)){
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()) {
+				return (rs.getInt("count") + 1);
+			}
+		}
+		return 0;
+	}
+	
 	public static List<Planning> getAllPlannings() throws SQLException{
 		List<Planning> plannings = new ArrayList<>();
 		String query = "SELECT * FROM planning";
